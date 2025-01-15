@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Standard.Rollback.PoC.Models.Foundations.Products;
 using Standard.Rollback.PoC.Models.Foundations.Products.Exceptions;
 
-namespace SdxRollbackPoc.Services.Orchestrations.Products
+namespace Standard.Rollback.PoC.Services.Orchestrations.Products
 {
     public partial class ProductOrchestrationService
     {

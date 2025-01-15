@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standard.Rollback.PoC", "Standard.Rollback.PoC\Standard.Rollback.PoC.csproj", "{472488CF-24C3-4D5F-B25B-00FC2335DD73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standard.Rollback.PoC.Tests.Manual", "Standard.Rollback.PoC.Tests.Manual\Standard.Rollback.PoC.Tests.Manual.csproj", "{FA06BA59-8738-41A8-857C-54B00E922DEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{472488CF-24C3-4D5F-B25B-00FC2335DD73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{472488CF-24C3-4D5F-B25B-00FC2335DD73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{472488CF-24C3-4D5F-B25B-00FC2335DD73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA06BA59-8738-41A8-857C-54B00E922DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA06BA59-8738-41A8-857C-54B00E922DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA06BA59-8738-41A8-857C-54B00E922DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA06BA59-8738-41A8-857C-54B00E922DEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

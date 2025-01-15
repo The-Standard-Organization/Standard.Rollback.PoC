@@ -6,6 +6,7 @@ using RESTFulSense.Controllers;
 using Standard.Rollback.PoC.Models.Foundations.Products;
 using Standard.Rollback.PoC.Models.Foundations.Products.Exceptions;
 using Standard.Rollback.PoC.Services.Foundations.Products;
+using Standard.Rollback.PoC.Services.Orchestrations.Products;
 
 namespace Standard.Rollback.PoC.Controllers
 {
@@ -14,9 +15,15 @@ namespace Standard.Rollback.PoC.Controllers
     public class ProductsController : RESTFulController
     {
         private readonly IProductService productService;
+        private readonly IProductOrchestrationService productOrchestrationService;
 
-        public ProductsController(IProductService productService) =>
+        public ProductsController(
+            IProductService productService,
+            IProductOrchestrationService productOrchestrationService)
+        {
             this.productService = productService;
+            this.productOrchestrationService = productOrchestrationService;
+        }
 
         [HttpPost]
         public async ValueTask<ActionResult<Product>> PostProductAsync(Product product)
@@ -106,7 +113,7 @@ namespace Standard.Rollback.PoC.Controllers
             try
             {
                 Product modifiedProduct =
-                    await this.productService.ModifyProductAsync(product);
+                    await this.productOrchestrationService.ModifyOrRollbackProductAsync(product);
 
                 return Ok(modifiedProduct);
             }

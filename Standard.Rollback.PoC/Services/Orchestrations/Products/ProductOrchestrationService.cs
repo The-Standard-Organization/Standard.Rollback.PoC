@@ -6,9 +6,8 @@ using Standard.Rollback.PoC.Models.Foundations.ProductImages;
 using Standard.Rollback.PoC.Models.Foundations.Products;
 using Standard.Rollback.PoC.Services.Foundations.ProductImages;
 using Standard.Rollback.PoC.Services.Foundations.Products;
-using Standard.Rollback.PoC.Services.Orchestrations.Products;
 
-namespace SdxRollbackPoc.Services.Orchestrations.Products
+namespace Standard.Rollback.PoC.Services.Orchestrations.Products
 {
     public partial class ProductOrchestrationService : IProductOrchestrationService
     {
@@ -32,13 +31,21 @@ namespace SdxRollbackPoc.Services.Orchestrations.Products
             ValidateProduct(product);
 
             Product lockedProduct =
-                await this.productService.LockProductAsync(product.Id);
+                await this.productService.LockProductAsync(product);
 
-            return await this.productService.ModifyProductAsync(product);
+            var modifiedProduct =
+                await this.productService.ModifyProductAsync(product);
+
+            throw new Exception("An error occurred while processing the product.");
+
+            return await this.productService.UnlockProductAsync(modifiedProduct);
         },
         async (Exception reasonException) =>
         {
-            return await this.productService.UndoLastChangedProductAsync(product);
+            Product revertedProduct =
+                await this.productService.UndoLastChangedProductAsync(product);
+
+            return await this.productService.UnlockProductAsync(revertedProduct);
         });
 
         public ValueTask<Product> RemoveOrRollbackProductAsync(Guid productId)

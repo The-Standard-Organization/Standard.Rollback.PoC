@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions;
@@ -105,14 +106,21 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         {
             var broker = new StorageBroker(this.configuration);
 
-            return await broker.Set<T>()
-                .FromSqlInterpolated($@"
-                    SELECT TOP 1 * 
-                    FROM {tableName} FOR SYSTEM_TIME ALL 
-                    WHERE Id = '{objectId}' AND SysEndTime < SYSUTCDATETIME()
-                    ORDER BY SysEndTime DESC")
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            List<T> allHistory = broker.Set<T>().TemporalAll()
+                .Where(e => EF.Property<Guid>(e, "Id") == objectId)
+                .OrderByDescending(e => EF.Property<DateTime>(e, "PeriodEnd")).ToList();
+
+            var item = allHistory.Skip(2).FirstOrDefault();
+
+            return item;
+            //return await broker.Set<T>()
+            //    .FromSqlInterpolated($@"
+            //        SELECT TOP 1 * 
+            //        FROM {tableName}History FOR SYSTEM_TIME ALL 
+            //        WHERE Id = {objectId} AND PeriodEnd < SYSUTCDATETIME()
+            //        ORDER BY PeriodEnd DESC")
+            //    .AsNoTracking()
+            //    .FirstOrDefaultAsync();
         }
 
 

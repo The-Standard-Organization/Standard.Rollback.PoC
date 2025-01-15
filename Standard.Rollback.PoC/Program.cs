@@ -8,6 +8,7 @@ using Standard.Rollback.PoC.Brokers.Storages;
 using Standard.Rollback.PoC.Services.Foundations.ProductImages;
 using Standard.Rollback.PoC.Services.Foundations.Products;
 using Standard.Rollback.PoC.Services.Foundations.ProductSources;
+using Standard.Rollback.PoC.Services.Orchestrations.Products;
 
 namespace Standard.Rollback.PoC
 {
@@ -27,6 +28,7 @@ namespace Standard.Rollback.PoC
             builder.Services.AddTransient<IProductService, ProductService>();
             builder.Services.AddTransient<IProductImageService, ProductImageService>();
             builder.Services.AddTransient<IProductSourceService, ProductSourceService>();
+            builder.Services.AddTransient<IProductOrchestrationService, ProductOrchestrationService>();
 
             var app = builder.Build();
 
