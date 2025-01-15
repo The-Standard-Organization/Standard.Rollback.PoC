@@ -11,7 +11,7 @@ namespace Standard.Rollback.PoC.Models.Foundations.ProductImages
         public Guid ProductId { get; set; }
 
         public bool IsLocked { get; set; }
-        public DateTimeOffset LockedUntilDate { get; set; }
+        public DateTimeOffset LockedDate { get; set; }
 
         public virtual Product Product { get; set; }
     }

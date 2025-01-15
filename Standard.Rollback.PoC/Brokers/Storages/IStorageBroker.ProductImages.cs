@@ -12,5 +12,9 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         ValueTask<ProductImage> SelectProductImageByIdAsync(Guid productImageId);
         ValueTask<ProductImage> UpdateProductImageAsync(ProductImage productImage);
         ValueTask<ProductImage> DeleteProductImageAsync(ProductImage productImage);
+        ValueTask<ProductImage> SelectLastProductImageChangeAsync(Guid productImageId);
+        ValueTask<ProductImage> RevertLastProductImageChangeAsync(
+            ProductImage productImage,
+            ProductImage previousProductImage);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions;
@@ -90,6 +91,30 @@ namespace Standard.Rollback.PoC.Brokers.Storages
 
             return @object;
         }
+
+        private async ValueTask<T> RevertAsync<T>(T @object, T previousObject)
+        {
+            var broker = new StorageBroker(this.configuration);
+            broker.Entry(@object).CurrentValues.SetValues(previousObject);
+            await broker.SaveChangesAsync();
+
+            return @object;
+        }
+
+        private async ValueTask<T> GetPreviousVersionAsync<T>(Guid objectId, string tableName) where T : class
+        {
+            var broker = new StorageBroker(this.configuration);
+
+            return await broker.Set<T>()
+                .FromSqlInterpolated($@"
+                    SELECT TOP 1 * 
+                    FROM {tableName} FOR SYSTEM_TIME ALL 
+                    WHERE Id = '{objectId}' AND SysEndTime < SYSUTCDATETIME()
+                    ORDER BY SysEndTime DESC")
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
 
         public override void Dispose() { }
     }

@@ -5,7 +5,6 @@ using Standard.Rollback.PoC.Brokers.DateTimes;
 using Standard.Rollback.PoC.Brokers.Loggings;
 using Standard.Rollback.PoC.Brokers.Storages;
 using Standard.Rollback.PoC.Models.Foundations.Products;
-using Standard.Rollback.PoC.Services.Foundations.Products;
 
 namespace Standard.Rollback.PoC.Services.Foundations.Products
 {
@@ -74,5 +73,57 @@ namespace Standard.Rollback.PoC.Services.Foundations.Products
 
                 return await this.storageBroker.DeleteProductAsync(maybeProduct);
             });
+
+        public ValueTask<Product> LockProductAsync(Guid productId) =>
+        TryCatch(async () =>
+        {
+            ValidateProductId(productId);
+
+            Product maybeProduct =
+                await this.storageBroker.SelectProductByIdAsync(productId);
+
+            ValidateStorageProduct(maybeProduct, productId);
+
+            maybeProduct.IsLocked = true;
+            maybeProduct.LockedDate =
+                this.dateTimeBroker.GetCurrentDateTimeOffset();
+
+            return await this.storageBroker.UpdateProductAsync(maybeProduct);
+        });
+
+        public ValueTask<Product> UnlockProductAsync(Guid productId) =>
+        TryCatch(async () =>
+        {
+            ValidateProductId(productId);
+
+            Product maybeProduct =
+                await this.storageBroker.SelectProductByIdAsync(productId);
+
+            ValidateStorageProduct(maybeProduct, productId);
+
+            maybeProduct.IsLocked = false;
+
+            return await this.storageBroker.UpdateProductAsync(maybeProduct);
+        });
+
+        public ValueTask<Product> UndoLastChangedProductAsync(Guid productId) =>
+        TryCatch(async () =>
+        {
+            ValidateProductId(productId);
+
+            Product maybeProduct = await this.storageBroker
+                .SelectProductByIdAsync(productId);
+
+            ValidateStorageProduct(maybeProduct, productId);
+
+            Product lastProductChange = await this.storageBroker
+                .SelectLastProductChangeAsync(productId);
+
+            ValidateStorageProduct(lastProductChange, productId);
+
+            return await this.storageBroker.RevertLastProductChangeAsync(
+                maybeProduct,
+                lastProductChange);
+        });
     }
 }

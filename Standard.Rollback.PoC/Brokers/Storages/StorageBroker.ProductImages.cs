@@ -26,6 +26,20 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         public async ValueTask<ProductImage> DeleteProductImageAsync(ProductImage productImage) =>
             await DeleteAsync(productImage);
 
+        public async ValueTask<ProductImage> SelectLastProductImageChangeAsync(Guid productImageId)
+        {
+            return await GetPreviousVersionAsync<ProductImage>(
+                  objectId: productImageId,
+                  tableName: nameof(ProductImages));
+        }
+
+        public async ValueTask<ProductImage> RevertLastProductImageChangeAsync(
+            ProductImage productImage,
+            ProductImage previousProductImage)
+        {
+            return await RevertAsync(productImage, previousProductImage);
+        }
+
         internal void ConfigureProductImages(EntityTypeBuilder<ProductImage> builder)
         {
             builder.HasOne(image => image.Product)

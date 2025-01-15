@@ -26,6 +26,20 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         public async ValueTask<Product> DeleteProductAsync(Product product) =>
             await DeleteAsync(product);
 
+        public async ValueTask<Product> SelectLastProductChangeAsync(Guid productId)
+        {
+            return await GetPreviousVersionAsync<Product>(
+                  objectId: productId,
+                  tableName: nameof(Products));
+        }
+
+        public async ValueTask<Product> RevertLastProductChangeAsync(
+            Product product,
+            Product previousProduct)
+        {
+            return await RevertAsync(product, previousProduct);
+        }
+
         internal void ConfigureProducts(EntityTypeBuilder<Product> builder)
         {
             // TO DO: Configure the Product entity

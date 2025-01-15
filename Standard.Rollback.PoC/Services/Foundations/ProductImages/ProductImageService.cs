@@ -73,5 +73,25 @@ namespace Standard.Rollback.PoC.Services.Foundations.ProductImages
 
                 return await this.storageBroker.DeleteProductImageAsync(maybeProductImage);
             });
+
+        public ValueTask<ProductImage> UndoLastChangedProductImageAsync(Guid productImageId) =>
+        TryCatch(async () =>
+        {
+            ValidateProductImageId(productImageId);
+
+            ProductImage maybeProductImage = await this.storageBroker
+                .SelectProductImageByIdAsync(productImageId);
+
+            ValidateStorageProductImage(maybeProductImage, productImageId);
+
+            ProductImage lastProductImageChange = await this.storageBroker
+                .SelectLastProductImageChangeAsync(productImageId);
+
+            ValidateStorageProductImage(maybeProductImage, productImageId);
+
+            return await this.storageBroker.RevertLastProductImageChangeAsync(
+                maybeProductImage,
+                lastProductImageChange);
+        });
     }
 }
