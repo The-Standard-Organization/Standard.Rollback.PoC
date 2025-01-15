@@ -98,7 +98,7 @@ namespace Standard.Rollback.PoC.Brokers.Storages
             broker.Entry(@object).CurrentValues.SetValues(previousObject);
             await broker.SaveChangesAsync();
 
-            return @object;
+            return previousObject;
         }
 
         private async ValueTask<T> GetPreviousVersionAsync<T>(Guid objectId, string tableName) where T : class

@@ -6,6 +6,12 @@ namespace SdxRollbackPoc.Services.Orchestrations.Products
 {
     public partial class ProductOrchestrationService
     {
+        private void ValidateProduct(Product product)
+        {
+            if (product == null)
+                throw new InvalidProductException();
+        }
+
         private void ValidateProductExists(Product product, Guid productId)
         {
             if (product == null)

@@ -74,23 +74,32 @@ namespace Standard.Rollback.PoC.Services.Foundations.ProductImages
                 return await this.storageBroker.DeleteProductImageAsync(maybeProductImage);
             });
 
-        public ValueTask<ProductImage> UndoLastChangedProductImageAsync(Guid productImageId) =>
+        public ValueTask<ProductImage> LockProductImageAsync(ProductImage productImage) =>
         TryCatch(async () =>
         {
-            ValidateProductImageId(productImageId);
+            productImage.IsLocked = true;
+            productImage.LockedDate =
+                this.dateTimeBroker.GetCurrentDateTimeOffset();
 
-            ProductImage maybeProductImage = await this.storageBroker
-                .SelectProductImageByIdAsync(productImageId);
+            return await this.storageBroker.UpdateProductImageAsync(productImage);
+        });
 
-            ValidateStorageProductImage(maybeProductImage, productImageId);
+        public ValueTask<ProductImage> UnlockProductImageAsync(ProductImage productImage) =>
+        TryCatch(async () =>
+        {
+            productImage.IsLocked = false;
 
+            return await this.storageBroker.UpdateProductImageAsync(productImage);
+        });
+
+        public ValueTask<ProductImage> UndoLastChangedProductImageAsync(ProductImage productImage) =>
+        TryCatch(async () =>
+        {
             ProductImage lastProductImageChange = await this.storageBroker
-                .SelectLastProductImageChangeAsync(productImageId);
-
-            ValidateStorageProductImage(maybeProductImage, productImageId);
+                .SelectLastProductImageChangeAsync(productImage.Id);
 
             return await this.storageBroker.RevertLastProductImageChangeAsync(
-                maybeProductImage,
+                productImage,
                 lastProductImageChange);
         });
     }

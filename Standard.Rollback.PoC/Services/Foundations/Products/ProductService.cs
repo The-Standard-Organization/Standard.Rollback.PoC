@@ -74,55 +74,32 @@ namespace Standard.Rollback.PoC.Services.Foundations.Products
                 return await this.storageBroker.DeleteProductAsync(maybeProduct);
             });
 
-        public ValueTask<Product> LockProductAsync(Guid productId) =>
+        public ValueTask<Product> LockProductAsync(Product product) =>
         TryCatch(async () =>
         {
-            ValidateProductId(productId);
-
-            Product maybeProduct =
-                await this.storageBroker.SelectProductByIdAsync(productId);
-
-            ValidateStorageProduct(maybeProduct, productId);
-
-            maybeProduct.IsLocked = true;
-            maybeProduct.LockedDate =
+            product.IsLocked = true;
+            product.LockedDate =
                 this.dateTimeBroker.GetCurrentDateTimeOffset();
 
-            return await this.storageBroker.UpdateProductAsync(maybeProduct);
+            return await this.storageBroker.UpdateProductAsync(product);
         });
 
-        public ValueTask<Product> UnlockProductAsync(Guid productId) =>
+        public ValueTask<Product> UnlockProductAsync(Product product) =>
         TryCatch(async () =>
         {
-            ValidateProductId(productId);
+            product.IsLocked = false;
 
-            Product maybeProduct =
-                await this.storageBroker.SelectProductByIdAsync(productId);
-
-            ValidateStorageProduct(maybeProduct, productId);
-
-            maybeProduct.IsLocked = false;
-
-            return await this.storageBroker.UpdateProductAsync(maybeProduct);
+            return await this.storageBroker.UpdateProductAsync(product);
         });
 
-        public ValueTask<Product> UndoLastChangedProductAsync(Guid productId) =>
+        public ValueTask<Product> UndoLastChangedProductAsync(Product product) =>
         TryCatch(async () =>
         {
-            ValidateProductId(productId);
-
-            Product maybeProduct = await this.storageBroker
-                .SelectProductByIdAsync(productId);
-
-            ValidateStorageProduct(maybeProduct, productId);
-
             Product lastProductChange = await this.storageBroker
-                .SelectLastProductChangeAsync(productId);
-
-            ValidateStorageProduct(lastProductChange, productId);
+                .SelectLastProductChangeAsync(product.Id);
 
             return await this.storageBroker.RevertLastProductChangeAsync(
-                maybeProduct,
+                product,
                 lastProductChange);
         });
     }

@@ -26,7 +26,26 @@ namespace SdxRollbackPoc.Services.Orchestrations.Products
             this.loggingBroker = loggingBroker;
         }
 
-        //public async ValueTask<Product> RemoveOrRollbackProductAsync(Guid productId)
+        public ValueTask<Product> ModifyOrRollbackProductAsync(Product product) =>
+        TryCatchAndRollback(async () =>
+        {
+            ValidateProduct(product);
+
+            Product lockedProduct =
+                await this.productService.LockProductAsync(product.Id);
+
+            return await this.productService.ModifyProductAsync(product);
+        },
+        async (Exception reasonException) =>
+        {
+            return await this.productService.UndoLastChangedProductAsync(product);
+        });
+
+        public ValueTask<Product> RemoveOrRollbackProductAsync(Guid productId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async ValueTask<Product> RemoveProductWithRollbackAsync(Guid productId)
         {
             var maybeDeletedImages = new List<ProductImage>();

@@ -6,6 +6,7 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
 {
     public interface IProductOrchestrationService
     {
-        ValueTask<Product> RemoveProductWithRollbackAsync(Guid productId);
+        ValueTask<Product> ModifyOrRollbackProductAsync(Product product);
+        ValueTask<Product> RemoveOrRollbackProductAsync(Guid productId);
     }
 }
