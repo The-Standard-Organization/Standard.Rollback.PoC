@@ -9,6 +9,10 @@ namespace Standard.Rollback.PoC.Models.Foundations.ProductImages
         public string Name { get; set; }
         public string Url { get; set; }
         public Guid ProductId { get; set; }
+
+        public bool IsLocked { get; set; }
+        public DateTimeOffset LockedUntilDate { get; set; }
+
         public virtual Product Product { get; set; }
     }
 }
