@@ -8,7 +8,7 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
     public partial class ProductOrchestrationService
     {
         private delegate ValueTask<Product> ReturningProductFunction();
-        private delegate ValueTask<Product> RollingbackProductFunction(Exception reasonException);
+        private delegate ValueTask RollingbackProductFunction(Exception reasonException);
 
         private async ValueTask<Product> TryCatchAndRollback(
             ReturningProductFunction returningProductFunction,
@@ -39,13 +39,13 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
             }
         }
 
-        private async ValueTask<Product> TryRollback(
+        private async ValueTask TryRollback(
             Exception reasonException, // or mainException 
             RollingbackProductFunction rollingbackProductFunction)
         {
             try
             {
-                return await rollingbackProductFunction(reasonException);
+                await rollingbackProductFunction(reasonException);
             }
             catch (Exception exception)
             {

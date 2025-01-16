@@ -33,7 +33,7 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
             var modifiedProduct =
                 await this.productService.ModifyProductAsync(product);
 
-            throw new Exception("An error occurred while processing the product.");
+            throw new Exception("AAA - An error occurred while processing the product.");
 
             return modifiedProduct;
         },
@@ -41,8 +41,6 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
         {
             Product revertedProduct =
                 await this.productService.UndoLastChangedProductAsync(product);
-
-            return revertedProduct;
         });
 
         public ValueTask<Product> RemoveOrRollbackProductAsync(Guid productId)
@@ -84,7 +82,7 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
 
                 // we can add dome validate here like: EnsureRolledBackImages(deletedImages, rolledBackImages)
 
-                return await RollbackDeletedProductAsync(maybeDeletedProduct);
+                await RollbackDeletedProductAsync(maybeDeletedProduct);
             });
         }
 

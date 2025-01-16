@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Standard.Rollback.PoC.Brokers.DateTimes;
 using Standard.Rollback.PoC.Brokers.Loggings;
 using Standard.Rollback.PoC.Brokers.Storages;
@@ -77,12 +78,15 @@ namespace Standard.Rollback.PoC.Services.Foundations.Products
         public ValueTask<Product> UndoLastChangedProductAsync(Product product) =>
         TryCatch(async () =>
         {
-            Product lastProductChange = await this.storageBroker
-                .SelectLastProductChangeAsync(product.Id);
+            Product lastProduct = await
+                this.storageBroker.SelectProductsHistory()
+                    .Where(p => p.Id == product.Id)
+                    .OrderBy(p => p.SysEndTime)
+                    .LastOrDefaultAsync();
 
             return await this.storageBroker.RevertLastProductChangeAsync(
                 product,
-                lastProductChange);
+                lastProduct);
         });
     }
 }

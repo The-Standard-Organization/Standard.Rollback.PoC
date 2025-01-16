@@ -77,8 +77,9 @@ namespace Standard.Rollback.PoC.Services.Foundations.ProductImages
         public ValueTask<ProductImage> UndoLastChangedProductImageAsync(ProductImage productImage) =>
         TryCatch(async () =>
         {
-            ProductImage lastProductImageChange = await this.storageBroker
-                .SelectLastProductImageChangeAsync(productImage.Id);
+            ProductImage lastProductImageChange = this.storageBroker.SelectProductImagesHistory()
+                    .Where(image => image.Id == productImage.Id)
+                    .LastOrDefault();
 
             return await this.storageBroker.RevertLastProductImageChangeAsync(
                 productImage,

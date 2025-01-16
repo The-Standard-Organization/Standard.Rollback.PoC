@@ -142,6 +142,14 @@ namespace Standard.Rollback.PoC.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
+                    b.Property<DateTime>("SysEndTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("SysEndTime");
+
+                    b.Property<DateTime>("SysStartTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("SysStartTime");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products", (string)null);

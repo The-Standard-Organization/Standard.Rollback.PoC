@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions;
@@ -30,8 +29,18 @@ namespace Standard.Rollback.PoC.Brokers.Storages
 
         private static void CreateTemporalTables(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>()
-                .ToTable("Products", productsTable => productsTable.IsTemporal());
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.ToTable("Products", tableBuilder =>
+                {
+                    tableBuilder.IsTemporal();
+                });
+
+                entity.Property(e => e.SysStartTime)
+                        .HasColumnName("SysStartTime");
+                entity.Property(e => e.SysEndTime)
+                        .HasColumnName("SysEndTime");
+            });
 
             modelBuilder.Entity<ProductSource>()
                 .ToTable("ProductSources", productSourcesTable => productSourcesTable.IsTemporal());
@@ -102,15 +111,11 @@ namespace Standard.Rollback.PoC.Brokers.Storages
             return previousObject;
         }
 
-        private async ValueTask<T> GetPreviousVersionAsync<T>(Guid objectId) where T : class
+        private IQueryable<T> SelectHistory<T>() where T : class
         {
             var broker = new StorageBroker(this.configuration);
 
-            return await broker.Set<T>().TemporalAll()
-                 .Where(e => EF.Property<Guid>(e, "Id") == objectId)
-                 .OrderByDescending(e => EF.Property<DateTime>(e, "PeriodEnd"))
-                 .Skip(1)
-                 .FirstOrDefaultAsync();
+            return broker.Set<T>().TemporalAll();
         }
 
 

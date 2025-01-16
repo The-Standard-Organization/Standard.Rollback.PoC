@@ -12,8 +12,8 @@ using Standard.Rollback.PoC.Brokers.Storages;
 namespace Standard.Rollback.PoC.Migrations
 {
     [DbContext(typeof(StorageBroker))]
-    [Migration("20250115110118_initial")]
-    partial class initial
+    [Migration("20250116164959_AddProductPeriodEnd")]
+    partial class AddProductPeriodEnd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace Standard.Rollback.PoC.Migrations
                     b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("LockedUntilDate")
+                    b.Property<DateTimeOffset>("LockedDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
@@ -129,7 +129,7 @@ namespace Standard.Rollback.PoC.Migrations
                     b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("LockedUntilDate")
+                    b.Property<DateTimeOffset>("LockedDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
@@ -144,6 +144,14 @@ namespace Standard.Rollback.PoC.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
+
+                    b.Property<DateTime>("SysEndTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("SysEndTime");
+
+                    b.Property<DateTime>("SysStartTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("SysStartTime");
 
                     b.HasKey("Id");
 

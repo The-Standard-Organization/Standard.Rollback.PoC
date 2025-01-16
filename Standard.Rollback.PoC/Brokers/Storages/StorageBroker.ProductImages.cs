@@ -26,10 +26,8 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         public async ValueTask<ProductImage> DeleteProductImageAsync(ProductImage productImage) =>
             await DeleteAsync(productImage);
 
-        public async ValueTask<ProductImage> SelectLastProductImageChangeAsync(Guid productImageId)
-        {
-            return await GetPreviousVersionAsync<ProductImage>(productImageId);
-        }
+        public IQueryable<ProductImage> SelectProductImagesHistory() =>
+            SelectHistory<ProductImage>();
 
         public async ValueTask<ProductImage> RevertLastProductImageChangeAsync(
             ProductImage productImage,

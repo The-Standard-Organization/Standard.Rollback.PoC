@@ -12,7 +12,7 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         ValueTask<Product> SelectProductByIdAsync(Guid productId);
         ValueTask<Product> UpdateProductAsync(Product product);
         ValueTask<Product> DeleteProductAsync(Product product);
-        ValueTask<Product> SelectLastProductChangeAsync(Guid productId);
+        IQueryable<Product> SelectProductsHistory();
         ValueTask<Product> RevertLastProductChangeAsync(
             Product product,
             Product previousProduct);

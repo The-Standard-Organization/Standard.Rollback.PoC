@@ -13,6 +13,9 @@ namespace Standard.Rollback.PoC.Models.Foundations.Products
         public bool IsLocked { get; set; }
         public DateTimeOffset LockedDate { get; set; }
 
+        public DateTime SysEndTime { get; set; }
+        public DateTime SysStartTime { get; set; }
+
         public virtual ICollection<ProductSource> ProductSources { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
