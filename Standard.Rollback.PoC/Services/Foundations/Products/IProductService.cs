@@ -12,8 +12,6 @@ namespace Standard.Rollback.PoC.Services.Foundations.Products
         ValueTask<Product> RetrieveProductByIdAsync(Guid productId);
         ValueTask<Product> ModifyProductAsync(Product product);
         ValueTask<Product> RemoveProductByIdAsync(Guid productId);
-        ValueTask<Product> LockProductAsync(Product product);
-        ValueTask<Product> UnlockProductAsync(Product product);
         ValueTask<Product> UndoLastChangedProductAsync(Product product);
     }
 }

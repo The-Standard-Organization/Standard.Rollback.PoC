@@ -74,24 +74,6 @@ namespace Standard.Rollback.PoC.Services.Foundations.ProductImages
                 return await this.storageBroker.DeleteProductImageAsync(maybeProductImage);
             });
 
-        public ValueTask<ProductImage> LockProductImageAsync(ProductImage productImage) =>
-        TryCatch(async () =>
-        {
-            productImage.IsLocked = true;
-            productImage.LockedDate =
-                this.dateTimeBroker.GetCurrentDateTimeOffset();
-
-            return await this.storageBroker.UpdateProductImageAsync(productImage);
-        });
-
-        public ValueTask<ProductImage> UnlockProductImageAsync(ProductImage productImage) =>
-        TryCatch(async () =>
-        {
-            productImage.IsLocked = false;
-
-            return await this.storageBroker.UpdateProductImageAsync(productImage);
-        });
-
         public ValueTask<ProductImage> UndoLastChangedProductImageAsync(ProductImage productImage) =>
         TryCatch(async () =>
         {

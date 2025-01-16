@@ -30,22 +30,19 @@ namespace Standard.Rollback.PoC.Services.Orchestrations.Products
         {
             ValidateProduct(product);
 
-            Product lockedProduct =
-                await this.productService.LockProductAsync(product);
-
             var modifiedProduct =
                 await this.productService.ModifyProductAsync(product);
 
             throw new Exception("An error occurred while processing the product.");
 
-            return await this.productService.UnlockProductAsync(modifiedProduct);
+            return modifiedProduct;
         },
         async (Exception reasonException) =>
         {
             Product revertedProduct =
                 await this.productService.UndoLastChangedProductAsync(product);
 
-            return await this.productService.UnlockProductAsync(revertedProduct);
+            return revertedProduct;
         });
 
         public ValueTask<Product> RemoveOrRollbackProductAsync(Guid productId)

@@ -12,8 +12,6 @@ namespace Standard.Rollback.PoC.Services.Foundations.ProductImages
         ValueTask<ProductImage> RetrieveProductImageByIdAsync(Guid productImageId);
         ValueTask<ProductImage> ModifyProductImageAsync(ProductImage productImage);
         ValueTask<ProductImage> RemoveProductImageByIdAsync(Guid productImageId);
-        ValueTask<ProductImage> LockProductImageAsync(ProductImage productImage);
-        ValueTask<ProductImage> UnlockProductImageAsync(ProductImage productImage);
         ValueTask<ProductImage> UndoLastChangedProductImageAsync(ProductImage productImage);
     }
 }

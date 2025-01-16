@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions;
@@ -96,31 +95,22 @@ namespace Standard.Rollback.PoC.Brokers.Storages
         private async ValueTask<T> RevertAsync<T>(T @object, T previousObject)
         {
             var broker = new StorageBroker(this.configuration);
+            broker.Attach(@object);
             broker.Entry(@object).CurrentValues.SetValues(previousObject);
             await broker.SaveChangesAsync();
 
             return previousObject;
         }
 
-        private async ValueTask<T> GetPreviousVersionAsync<T>(Guid objectId, string tableName) where T : class
+        private async ValueTask<T> GetPreviousVersionAsync<T>(Guid objectId) where T : class
         {
             var broker = new StorageBroker(this.configuration);
 
-            List<T> allHistory = broker.Set<T>().TemporalAll()
-                .Where(e => EF.Property<Guid>(e, "Id") == objectId)
-                .OrderByDescending(e => EF.Property<DateTime>(e, "PeriodEnd")).ToList();
-
-            var item = allHistory.Skip(2).FirstOrDefault();
-
-            return item;
-            //return await broker.Set<T>()
-            //    .FromSqlInterpolated($@"
-            //        SELECT TOP 1 * 
-            //        FROM {tableName}History FOR SYSTEM_TIME ALL 
-            //        WHERE Id = {objectId} AND PeriodEnd < SYSUTCDATETIME()
-            //        ORDER BY PeriodEnd DESC")
-            //    .AsNoTracking()
-            //    .FirstOrDefaultAsync();
+            return await broker.Set<T>().TemporalAll()
+                 .Where(e => EF.Property<Guid>(e, "Id") == objectId)
+                 .OrderByDescending(e => EF.Property<DateTime>(e, "PeriodEnd"))
+                 .Skip(1)
+                 .FirstOrDefaultAsync();
         }
 
 

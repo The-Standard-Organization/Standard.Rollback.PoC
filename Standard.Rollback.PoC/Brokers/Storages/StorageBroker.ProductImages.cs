@@ -28,9 +28,7 @@ namespace Standard.Rollback.PoC.Brokers.Storages
 
         public async ValueTask<ProductImage> SelectLastProductImageChangeAsync(Guid productImageId)
         {
-            return await GetPreviousVersionAsync<ProductImage>(
-                  objectId: productImageId,
-                  tableName: nameof(ProductImages));
+            return await GetPreviousVersionAsync<ProductImage>(productImageId);
         }
 
         public async ValueTask<ProductImage> RevertLastProductImageChangeAsync(
